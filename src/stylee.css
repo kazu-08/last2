@@ -5,26 +5,26 @@ body {
     padding: 0;
     box-sizing: border-box;
     background-color: #f4f7fa;
-  }
-  
-  /* ヘッダー */
-  h1 {
+}
+
+/* ヘッダー */
+h1 {
     text-align: center;
     color: #333;
     font-size: 24px;
     margin-bottom: 20px;
-  }
-  
-  /* エラー表示 */
-  p {
+}
+
+/* エラー表示 */
+p {
     font-size: 14px;
     color: red;
     margin-top: 10px;
     text-align: center;
-  }
-  
-  /* 入力フォーム */
-  input[type="text"] {
+}
+
+/* 入力フォーム */
+input[type="text"] {
     padding: 10px;
     width: 70%;
     font-size: 16px;
@@ -32,9 +32,9 @@ body {
     border-radius: 4px;
     margin-right: 10px;
     box-sizing: border-box;
-  }
-  
-  button {
+}
+
+button {
     padding: 10px 20px;
     font-size: 16px;
     background-color: #007bff;
@@ -43,102 +43,105 @@ body {
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-  }
-  
-  button:hover {
+}
+
+button:hover {
     background-color: #0056b3;
-  }
-  
-  /* 駅リスト */
-  ul {
+}
+
+/* 駅リスト */
+ul {
     list-style-type: none;
     padding: 0;
-  }
-  
-  li {
+}
+
+li {
     margin: 10px 0;
     display: flex;
-    align-items: center; /* 駅名と削除ボタンを横並びに */
+    align-items: center;
     padding: 5px 0;
     border-bottom: 1px solid #ddd;
-    justify-content: space-between; /* 駅名とボタンを左右に配置 */
-  }
-  
-  li span {
+    justify-content: space-between;
+}
+
+li span {
     cursor: pointer;
     text-decoration: underline;
     color: #007bff;
-    margin-right: 10px; /* 駅名と削除ボタンの間にスペース */
-  }
-  
-  li button {
+    margin-right: 10px;
+}
+
+li button {
     color: red;
     background: none;
     border: none;
     cursor: pointer;
     font-size: 14px;
-  }
-  
-  li button:hover {
+}
+
+li button:hover {
     color: darkred;
-  }
-  
-  /* 結果セクション */
-  h2 {
+}
+
+/* 結果セクション */
+h2 {
     margin-top: 30px;
     font-size: 20px;
     color: #333;
-  }
-  
-  ul li {
+}
+
+ul li {
     display: block;
     margin: 5px 0;
-  }
-  
-  /* モバイル対応 */
-  @media (max-width: 768px) {
+}
+
+/* モバイル対応 */
+@media (max-width: 768px) {
     body {
-      padding: 10px;
+        padding: 10px;
     }
-  
+
     h1 {
-      font-size: 20px; /* 小さな画面でヘッダーを少し小さく */
+        font-size: 20px;
     }
-  
+
     /* 入力フォーム */
     input[type="text"] {
-      width: 60%; /* 入力フォームを少し小さめに */
-      font-size: 14px; /* スマホでの文字サイズ調整 */
+        width: 100%; /* 幅を100%に調整 */
+        font-size: 14px;
+        margin-right: 0;
+        margin-bottom: 10px; /* 下にスペースを追加 */
     }
-  
+
     button {
-      padding: 8px 16px;
-      font-size: 14px; /* スマホでのボタンサイズ調整 */
+        padding: 8px 16px;
+        font-size: 14px;
+        width: 100%; /* ボタンを幅いっぱいに */
+        margin-bottom: 10px; /* ボタン間にスペースを追加 */
     }
-  
+
     /* 駅リスト */
     li {
-      flex-direction: column; /* スマホでは縦並びに */
-      align-items: flex-start; /* 駅名とボタンを左寄せ */
-      margin: 8px 0;
+        flex-direction: column;
+        align-items: flex-start;
+        margin: 8px 0;
     }
-  
+
     li span {
-      margin-right: 0;
-      margin-bottom: 5px; /* 駅名と削除ボタンの間に少しスペース */
+        margin-bottom: 5px;
     }
-  
+
     li button {
-      margin-top: 5px; /* 駅名の下に削除ボタンを表示 */
+        margin-top: 5px;
+        align-self: flex-end; /* 削除ボタンを右端に配置 */
     }
-  
+
     /* 結果セクション */
     h2 {
-      font-size: 18px;
+        font-size: 18px;
     }
-  
+
     ul {
-      padding-left: 10px;
+        padding-left: 10px;
     }
-  }
-  
+}
