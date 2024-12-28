@@ -17,12 +17,12 @@ const App = () => {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
-          setInput(`現在地: 緯度 ${latitude}, 経度 ${longitude}`); // 入力欄に現在地を設定
           setStations([
             ...stations,
             { name: "現在地", lat: latitude, lng: longitude },
           ]);
           setMapCenter({ lat: latitude, lng: longitude }); // 地図の中心を現在地に設定
+          setInput(""); // 検索欄をクリア
         },
         (error) => {
           setError("現在地を取得できませんでした");
@@ -33,6 +33,7 @@ const App = () => {
       setError("このブラウザは位置情報に対応していません");
     }
   };
+  
 
   // 駅をリストに追加
   const addStation = async () => {
@@ -135,7 +136,7 @@ const App = () => {
     }
   };
 
-  const googleMapsApiKey = "AIzaSyBCGMXvuWt5PfwgZfDIM06DYOTh_RLMB_A"; // 必ずAPIキーを設定してください
+  const googleMapsApiKey = "AIzaSyBCGMXvuWt5PfwgZfDIM06DYOTh_RLMB_A"; 
 
   return (
     <div style={{ padding: "20px" }}>
