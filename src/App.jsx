@@ -1,24 +1,33 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api"; // Google Maps関連のコンポーネントをインポート
+import './stylee.css';
+
 
 const App = () => {
-  const [stations, setStations] = useState([]); // 入力された駅のリスト
-  const [input, setInput] = useState(""); // 入力欄の値
-  const [results, setResults] = useState([]); // 中間地点の検索結果
+  const [stations, setStations] = useState([]); // 入力された駅名
+  const [input, setInput] = useState(""); // ユーザーの入力
+  const [results, setResults] = useState([]); // 中間地点付近の駅
   const [error, setError] = useState(""); // エラーメッセージ
-  const [map, setMap] = useState(null); // Googleマップのインスタンス
+  const [midpoint, setMidpoint] = useState(null); // 中間地点
+  const [mapCenter, setMapCenter] = useState({ lat: 35.6895, lng: 139.6917 }); // 初期の地図中心（東京）
 
-  // 駅をリストに追加する
+  // 駅をリストに追加
   const addStation = async () => {
     if (!input.trim()) return;
-
     try {
       const response = await axios.get(
         `https://express.heartrails.com/api/json?method=getStations&name=${input}`
       );
       const stationData = response.data.response.station;
       if (stationData && stationData.length > 0) {
-        setStations([...stations, stationData[0]]);
+        const station = stationData[0];
+        // 駅を追加し、路線情報を保持しない
+        setStations([
+          ...stations,
+          { name: station.name, lat: station.y, lng: station.x },
+        ]);
+        setMapCenter({ lat: parseFloat(station.y), lng: parseFloat(station.x) }); // 駅追加時に地図の中心を更新
         setInput("");
         setError("");
       } else {
@@ -30,7 +39,12 @@ const App = () => {
     }
   };
 
-  // 中間地点を計算してGoogleマップAPIで経路情報を取得
+  // 駅を削除する関数
+  const removeStation = (index) => {
+    setStations(stations.filter((_, i) => i !== index));
+  };
+
+  // 中間地点を計算
   const findMidpoints = async () => {
     if (stations.length < 2) {
       setError("少なくとも2つの駅を追加してください");
@@ -38,98 +52,71 @@ const App = () => {
     }
     setError("");
 
+    // 中間地点を計算
     const midpoint = calculateMidpoint(
       stations.map((station) => ({
-        lat: parseFloat(station.y),
-        lng: parseFloat(station.x),
+        lat: parseFloat(station.lat),
+        lng: parseFloat(station.lng),
       }))
     );
 
+    setMidpoint(midpoint); // 中間地点をセット
+    setMapCenter(midpoint); // 中間地点に地図の中心を更新
+
     try {
-      const waypoints = stations
-        .slice(1, stations.length - 1)
-        .map((station) => ({
-          location: `${station.y},${station.x}`,
-          stopover: true,
-        }));
-
-      const origin = `${stations[0].y},${stations[0].x}`;
-      const destination = `${stations[stations.length - 1].y},${stations[stations.length - 1].x}`;
-
-      const directionsResponse = await axios.get(
-        `https://maps.googleapis.com/maps/api/directions/json`,
-        {
-          params: {
-            origin,
-            destination,
-            waypoints: waypoints.length > 0 ? waypoints.map((wp) => wp.location).join("|") : null,
-            key: "YOUR_GOOGLE_MAP_API_KEY",
-          },
-        }
+      const response = await axios.get(
+        `https://express.heartrails.com/api/json?method=getStations&x=${midpoint.lng}&y=${midpoint.lat}`
       );
-
-      const routes = directionsResponse.data.routes;
-      if (routes && routes.length > 0) {
-        const legs = routes[0].legs;
-        const totalDuration = legs.reduce((sum, leg) => sum + leg.duration.value, 0);
-        const totalTransfers = legs.length - 1;
-
-        setResults([
-          {
-            midpoint: midpoint,
-            duration: totalDuration,
-            transfers: totalTransfers,
-          },
-        ]);
-
-        if (map) {
-          new window.google.maps.Marker({
-            position: midpoint,
-            map: map,
-            title: `中間地点: ${Math.floor(totalDuration / 60)}分`,
-          });
-          map.setCenter(midpoint);
-        }
+      const nearbyStations = response.data.response.station;
+      if (nearbyStations && nearbyStations.length > 0) {
+        setResults(nearbyStations);
       } else {
-        setError("経路情報が見つかりませんでした");
+        setError("中間地点付近の駅が見つかりませんでした");
       }
     } catch (err) {
       console.error(err);
-      setError("経路情報の取得中にエラーが発生しました");
+      setError("データ取得中にエラーが発生しました");
     }
   };
 
-  // 中間地点を計算
+  // 中間地点の計算ロジック
   const calculateMidpoint = (locations) => {
     const latSum = locations.reduce((sum, loc) => sum + loc.lat, 0);
     const lngSum = locations.reduce((sum, loc) => sum + loc.lng, 0);
-    return {
-      lat: latSum / locations.length,
-      lng: lngSum / locations.length,
-    };
+    const midpointLat = latSum / locations.length;
+    const midpointLng = lngSum / locations.length;
+
+    return { lat: midpointLat, lng: midpointLng };
   };
 
-  // Googleマップの初期化
-  const initializeMap = () => {
-    const mapOptions = {
-      center: { lat: 35.682839, lng: 139.759455 }, // 初期位置: 東京駅
-      zoom: 12,
-    };
-    const googleMap = new window.google.maps.Map(document.getElementById("map"), mapOptions);
-    setMap(googleMap);
+  // 駅を検索するリンクを生成
+  const searchStation = (stationName) => {
+    const url = `https://www.google.com/search?q=${encodeURIComponent(
+      stationName
+    )}`;
+    window.open(url, "_blank");
   };
 
-  React.useEffect(() => {
-    if (window.google && window.google.maps) {
-      initializeMap();
-    } else {
-      const script = document.createElement("script");
-      script.src = `https://maps.googleapis.com/maps/api/js?AIzaSyBOQrYnnHE7aJNnlupzaTed5r3mSYvOvD4`;
-      script.async = true;
-      script.onload = () => initializeMap();
-      document.body.appendChild(script);
+  // リセット機能
+  const resetData = () => {
+    setStations([]);
+    setResults([]);
+    setInput("");
+    setError("");
+    setMidpoint(null);
+    setMapCenter({ lat: 35.6895, lng: 139.6917 }); // リセット時に地図を初期状態に
+  };
+
+  // エンターキーで追加
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault(); // デフォルトのフォーム送信を防ぐ
+      addStation();
     }
-  }, []);
+  };
+
+  // Google MapsのAPIキーを設定（YOUR_GOOGLE_MAPS_API_KEYにAPIキーを入れてください）
+  const googleMapsApiKey = "AIzaSyBCGMXvuWt5PfwgZfDIM06DYOTh_RLMB_A";
 
   return (
     <div style={{ padding: "20px" }}>
@@ -139,15 +126,31 @@ const App = () => {
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
+          onKeyDown={handleKeyDown} // エンターキー対応
           placeholder="駅名を入力"
         />
         <button onClick={addStation}>追加</button>
+        <button onClick={resetData} style={{ marginLeft: "10px" }}>
+          リセット
+        </button>
       </div>
       {error && <p style={{ color: "red" }}>{error}</p>}
       <ul>
         {stations.map((station, index) => (
           <li key={index}>
-            {station.name} ({station.line}線)
+            <span
+              style={{
+                color: "blue",
+                cursor: "pointer",
+                textDecoration: "underline",
+              }}
+              onClick={() => searchStation(station.name)}
+            >
+              {station.name} ({station.lat}, {station.lng})
+            </span>
+            <button onClick={() => removeStation(index)} style={{ marginLeft: "10px", color: "red" }}>
+              削除
+            </button>
           </li>
         ))}
       </ul>
@@ -157,15 +160,55 @@ const App = () => {
       <div>
         <h2>結果</h2>
         <ul>
-          {results.map((result, index) => (
+          {results.map((station, index) => (
             <li key={index}>
-              中間地点: 緯度 {result.midpoint.lat.toFixed(5)}, 経度 {result.midpoint.lng.toFixed(5)} | 
-              所要時間: {Math.floor(result.duration / 60)}分 | 乗り換え回数: {result.transfers}回
+              <span
+                style={{
+                  color: "blue",
+                  cursor: "pointer",
+                  textDecoration: "underline",
+                }}
+                onClick={() => searchStation(station.name)}
+              >
+                {station.name} ({station.line}線)
+              </span>
             </li>
           ))}
         </ul>
       </div>
-      <div id="map" style={{ width: "100%", height: "500px" }}></div>
+
+      <LoadScript googleMapsApiKey={googleMapsApiKey}>
+        <GoogleMap
+          mapContainerStyle={{ width: "100%", height: "400px" }}
+          center={mapCenter}
+          zoom={12}
+        >
+          {stations.map((station, index) => (
+            <Marker
+              key={index}
+              position={{
+                lat: parseFloat(station.lat),
+                lng: parseFloat(station.lng),
+              }}
+              label={station.name}
+            />
+          ))}
+          {midpoint && (
+            <Marker
+              position={midpoint}
+              label="中間地点"
+              icon={{
+                path: window.google.maps.SymbolPath.CIRCLE,
+                fillColor: "blue",
+                fillOpacity: 1,
+                scale: 6,
+                strokeColor: "white",
+                strokeWeight: 2,
+              }}
+            />
+          )}
+        </GoogleMap>
+      </LoadScript>
     </div>
   );
 };

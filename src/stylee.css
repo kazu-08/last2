@@ -1,0 +1,125 @@
+/* 全体のレイアウト */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-color: #e6f2ff; /* 淡い青 */
+  }
+  
+  /* ヘッダー */
+  h1 {
+    text-align: center;
+    color: #003366; /* ダークブルー */
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  /* エラー表示 */
+  p {
+    font-size: 14px;
+    color: #ff4d4d; /* エラー用に赤系の色 */
+    margin-top: 10px;
+    text-align: center;
+  }
+  
+  /* 入力フォーム */
+  input[type="text"] {
+    padding: 10px;
+    width: 70%;
+    font-size: 16px;
+    border: 1px solid #0066cc; /* 明るい青の境界線 */
+    border-radius: 4px;
+    margin-right: 10px;
+    box-sizing: border-box;
+  }
+  
+  button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #007bff; /* 明るい青 */
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  button:hover {
+    background-color: #0056b3; /* ホバー時の濃い青 */
+  }
+  
+  /* 駅リスト */
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  li {
+    margin: 10px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 0;
+    border-bottom: 1px solid #cce0ff; /* 薄い青の境界線 */
+  }
+  
+  li span {
+    cursor: pointer;
+    text-decoration: underline;
+    color: #0066cc; /* 明るい青 */
+  }
+  
+  li button {
+    margin-left: 10px;
+    color: #ff4d4d; /* 削除ボタンの赤 */
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  
+  li button:hover {
+    color: darkred;
+  }
+  
+  /* 結果セクション */
+  h2 {
+    margin-top: 30px;
+    font-size: 20px;
+    color: #003366; /* ダークブルー */
+  }
+  
+  ul li {
+    display: block;
+    margin: 5px 0;
+  }
+  
+  /* 地図のスタイル（影響を与えないように） */
+  #map {
+    height: 400px;
+    width: 100%;
+    margin-top: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 255, 0.3); /* 地図の影を青で */
+  }
+  
+  /* モバイル向けのスタイル */
+  @media (max-width: 768px) {
+    div {
+      padding: 10px;
+    }
+  
+    input[type="text"] {
+      width: 60%;
+    }
+  
+    button {
+      padding: 8px 16px;
+      font-size: 14px;
+    }
+  
+    ul {
+      padding-left: 10px;
+    }
+  }
+  
