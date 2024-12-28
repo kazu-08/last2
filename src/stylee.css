@@ -4,13 +4,13 @@ body {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    background-color: #e6f2ff; /* 淡い青 */
+    background-color: #f4f7fa;
   }
   
   /* ヘッダー */
   h1 {
     text-align: center;
-    color: #003366; /* ダークブルー */
+    color: #333;
     font-size: 24px;
     margin-bottom: 20px;
   }
@@ -18,7 +18,7 @@ body {
   /* エラー表示 */
   p {
     font-size: 14px;
-    color: #ff4d4d; /* エラー用に赤系の色 */
+    color: red;
     margin-top: 10px;
     text-align: center;
   }
@@ -28,7 +28,7 @@ body {
     padding: 10px;
     width: 70%;
     font-size: 16px;
-    border: 1px solid #0066cc; /* 明るい青の境界線 */
+    border: 1px solid #ccc;
     border-radius: 4px;
     margin-right: 10px;
     box-sizing: border-box;
@@ -37,7 +37,7 @@ body {
   button {
     padding: 10px 20px;
     font-size: 16px;
-    background-color: #007bff; /* 明るい青 */
+    background-color: #007bff;
     color: #fff;
     border: none;
     border-radius: 4px;
@@ -46,7 +46,7 @@ body {
   }
   
   button:hover {
-    background-color: #0056b3; /* ホバー時の濃い青 */
+    background-color: #0056b3;
   }
   
   /* 駅リスト */
@@ -58,24 +58,25 @@ body {
   li {
     margin: 10px 0;
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    align-items: center; /* 駅名と削除ボタンを横並びに */
     padding: 5px 0;
-    border-bottom: 1px solid #cce0ff; /* 薄い青の境界線 */
+    border-bottom: 1px solid #ddd;
+    justify-content: space-between; /* 駅名とボタンを左右に配置 */
   }
   
   li span {
     cursor: pointer;
     text-decoration: underline;
-    color: #0066cc; /* 明るい青 */
+    color: #007bff;
+    margin-right: 10px; /* 駅名と削除ボタンの間にスペース */
   }
   
   li button {
-    margin-left: 10px;
-    color: #ff4d4d; /* 削除ボタンの赤 */
+    color: red;
     background: none;
     border: none;
     cursor: pointer;
+    font-size: 14px;
   }
   
   li button:hover {
@@ -86,7 +87,7 @@ body {
   h2 {
     margin-top: 30px;
     font-size: 20px;
-    color: #003366; /* ダークブルー */
+    color: #333;
   }
   
   ul li {
@@ -94,28 +95,46 @@ body {
     margin: 5px 0;
   }
   
-  /* 地図のスタイル（影響を与えないように） */
-  #map {
-    height: 400px;
-    width: 100%;
-    margin-top: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0, 0, 255, 0.3); /* 地図の影を青で */
-  }
-  
-  /* モバイル向けのスタイル */
+  /* モバイル対応 */
   @media (max-width: 768px) {
-    div {
+    body {
       padding: 10px;
     }
   
+    h1 {
+      font-size: 20px; /* 小さな画面でヘッダーを少し小さく */
+    }
+  
+    /* 入力フォーム */
     input[type="text"] {
-      width: 60%;
+      width: 60%; /* 入力フォームを少し小さめに */
+      font-size: 14px; /* スマホでの文字サイズ調整 */
     }
   
     button {
       padding: 8px 16px;
-      font-size: 14px;
+      font-size: 14px; /* スマホでのボタンサイズ調整 */
+    }
+  
+    /* 駅リスト */
+    li {
+      flex-direction: column; /* スマホでは縦並びに */
+      align-items: flex-start; /* 駅名とボタンを左寄せ */
+      margin: 8px 0;
+    }
+  
+    li span {
+      margin-right: 0;
+      margin-bottom: 5px; /* 駅名と削除ボタンの間に少しスペース */
+    }
+  
+    li button {
+      margin-top: 5px; /* 駅名の下に削除ボタンを表示 */
+    }
+  
+    /* 結果セクション */
+    h2 {
+      font-size: 18px;
     }
   
     ul {
