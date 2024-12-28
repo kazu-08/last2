@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api"; // Google Maps関連のコンポーネントをインポート
+import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import './stylee.css';
-
 
 const App = () => {
   const [stations, setStations] = useState([]); // 入力された駅名
@@ -11,6 +10,29 @@ const App = () => {
   const [error, setError] = useState(""); // エラーメッセージ
   const [midpoint, setMidpoint] = useState(null); // 中間地点
   const [mapCenter, setMapCenter] = useState({ lat: 35.6895, lng: 139.6917 }); // 初期の地図中心（東京）
+
+  // 現在地を取得する関数
+  const getCurrentLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setInput(`現在地: 緯度 ${latitude}, 経度 ${longitude}`); // 入力欄に現在地を設定
+          setStations([
+            ...stations,
+            { name: "現在地", lat: latitude, lng: longitude },
+          ]);
+          setMapCenter({ lat: latitude, lng: longitude }); // 地図の中心を現在地に設定
+        },
+        (error) => {
+          setError("現在地を取得できませんでした");
+          console.error(error);
+        }
+      );
+    } else {
+      setError("このブラウザは位置情報に対応していません");
+    }
+  };
 
   // 駅をリストに追加
   const addStation = async () => {
@@ -22,12 +44,11 @@ const App = () => {
       const stationData = response.data.response.station;
       if (stationData && stationData.length > 0) {
         const station = stationData[0];
-        // 駅を追加し、路線情報を保持しない
         setStations([
           ...stations,
           { name: station.name, lat: station.y, lng: station.x },
         ]);
-        setMapCenter({ lat: parseFloat(station.y), lng: parseFloat(station.x) }); // 駅追加時に地図の中心を更新
+        setMapCenter({ lat: parseFloat(station.y), lng: parseFloat(station.x) });
         setInput("");
         setError("");
       } else {
@@ -52,7 +73,6 @@ const App = () => {
     }
     setError("");
 
-    // 中間地点を計算
     const midpoint = calculateMidpoint(
       stations.map((station) => ({
         lat: parseFloat(station.lat),
@@ -60,8 +80,8 @@ const App = () => {
       }))
     );
 
-    setMidpoint(midpoint); // 中間地点をセット
-    setMapCenter(midpoint); // 中間地点に地図の中心を更新
+    setMidpoint(midpoint);
+    setMapCenter(midpoint);
 
     try {
       const response = await axios.get(
@@ -104,19 +124,18 @@ const App = () => {
     setInput("");
     setError("");
     setMidpoint(null);
-    setMapCenter({ lat: 35.6895, lng: 139.6917 }); // リセット時に地図を初期状態に
+    setMapCenter({ lat: 35.6895, lng: 139.6917 });
   };
 
   // エンターキーで追加
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
-      event.preventDefault(); // デフォルトのフォーム送信を防ぐ
+      event.preventDefault();
       addStation();
     }
   };
 
-  // Google MapsのAPIキーを設定（YOUR_GOOGLE_MAPS_API_KEYにAPIキーを入れてください）
-  const googleMapsApiKey = "AIzaSyBCGMXvuWt5PfwgZfDIM06DYOTh_RLMB_A";
+  const googleMapsApiKey = "AIzaSyBCGMXvuWt5PfwgZfDIM06DYOTh_RLMB_A"; // 必ずAPIキーを設定してください
 
   return (
     <div style={{ padding: "20px" }}>
@@ -126,10 +145,13 @@ const App = () => {
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          onKeyDown={handleKeyDown} // エンターキー対応
+          onKeyDown={handleKeyDown}
           placeholder="駅名を入力"
         />
         <button onClick={addStation}>追加</button>
+        <button onClick={getCurrentLocation} style={{ marginLeft: "10px" }}>
+          現在地を追加
+        </button>
         <button onClick={resetData} style={{ marginLeft: "10px" }}>
           リセット
         </button>
@@ -148,7 +170,10 @@ const App = () => {
             >
               {station.name} ({station.lat}, {station.lng})
             </span>
-            <button onClick={() => removeStation(index)} style={{ marginLeft: "10px", color: "red" }}>
+            <button
+              onClick={() => removeStation(index)}
+              style={{ marginLeft: "10px", color: "red" }}
+            >
               削除
             </button>
           </li>
