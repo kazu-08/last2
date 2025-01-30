@@ -1,67 +1,72 @@
 /* Google Fonts の追加 */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap');
 
 /* 全体のレイアウト */
 body {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Inter', sans-serif;
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    background-color: #f8f4f0; /* 温かみのある背景色 */
-    color: #5a5144; /* 落ち着いたブラウン */
+    background-color: #121212; /* ダーク背景 */
+    color: #e0e0e0; /* 明るいテキスト */
 }
 
-/* コンテンツの中央寄せ */
+/* メインコンテナ */
 .container {
-    max-width: 100%;
-    margin: 20px auto;
-    padding: 15px;
-    background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    text-align: center;
 }
 
 /* ヘッダー */
 h1 {
-    text-align: center;
-    color: #3e372f;
-    font-size: 24px;
+    font-size: 32px;
     font-weight: 600;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
+    color: #ffffff;
 }
 
 /* 入力フォーム */
 .form-group {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 15px;
     width: 100%;
 }
 
 input[type="text"] {
-    padding: 12px;
+    padding: 15px;
     width: 100%;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
+    font-size: 18px;
+    border: 1px solid #333;
+    border-radius: 8px;
+    background: #1e1e1e;
+    color: #e0e0e0;
     box-sizing: border-box;
+    transition: 0.3s;
+}
+
+input[type="text"]:focus {
+    border-color: #ffffff;
+    outline: none;
 }
 
 /* ボタン */
 button {
-    padding: 10px 20px; /* 前のサイズを維持 */
+    padding: 10px 20px; /* サイズは維持 */
     font-size: 16px;
-    background-color: #8a7f72;
-    color: #fff;
+    background-color: #ffffff;
+    color: #121212;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s;
+    font-weight: 600;
+    transition: 0.3s ease;
 }
 
 button:hover {
-    background-color: #776b5e;
-    transform: scale(1.03);
+    background-color: #e0e0e0;
 }
 
 /* 駅リスト */
@@ -71,22 +76,22 @@ ul {
 }
 
 li {
-    margin: 8px 0;
+    padding: 15px;
+    margin: 10px 0;
+    background: #ffffff; /* 白背景 */
+    border-radius: 8px;
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    padding: 12px;
-    background: #fff;
-    border-radius: 6px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    width: 100%;
+    align-items: center;
+    transition: 0.3s ease;
+    color: #121212; /* 黒文字 */
+    box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1); /* 軽い影を追加 */
 }
 
 li span {
     cursor: pointer;
-    text-decoration: none;
-    color: #8a7f72;
-    font-weight: 600;
+    font-weight: 500;
+    color: #007bff; /* リンク風カラー */
 }
 
 li span:hover {
@@ -94,42 +99,37 @@ li span:hover {
 }
 
 li button {
-    color: #d9534f;
+    color: #ff4d4d;
     background: none;
     border: none;
     cursor: pointer;
     font-size: 14px;
+    font-weight: 600;
 }
 
 li button:hover {
-    color: #b52b27;
+    color: #ff0000;
 }
 
 /* 結果セクション */
 h2 {
-    margin-top: 20px;
-    font-size: 20px;
-    color: #3e372f;
-    text-align: center;
+    margin-top: 30px;
+    font-size: 24px;
+    color: #ffffff;
 }
 
 /* モバイル対応 */
 @media (max-width: 768px) {
     .container {
-        padding: 10px;
+        padding: 15px;
     }
 
     h1 {
-        font-size: 22px;
-    }
-
-    .form-group {
-        flex-direction: column;
+        font-size: 28px;
     }
 
     input[type="text"] {
-        font-size: 14px;
-        margin-bottom: 10px;
+        font-size: 16px;
     }
 
     button {
